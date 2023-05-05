@@ -1,8 +1,9 @@
-import Hydra from "hydra-synth";
+import { createApp } from "vue";
+import App from "./App.vue";
 import "./style.css";
 
+const app = createApp(App);
+
 document.addEventListener("DOMContentLoaded", () => {
-  const hydra = new Hydra({ makeGlobal: false, detectAudio: false }).synth;
-  const { osc, o0, s0, src, noise } = hydra;
-  osc(4, 0.1, 1.2).out();
+  const root = app.mount("#app");
 });
