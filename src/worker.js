@@ -46,11 +46,8 @@ export default {
       stream: true,
     };
 
-    if ("content" in json) {
-      parameters.messages.push({
-        role: "user",
-        content: json["content"],
-      });
+    if ("messages" in json) {
+      parameters.messages = parameters.messages.concat(json["messages"]);
     } else {
       parameters.messages.push({
         role: "user",

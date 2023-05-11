@@ -33,6 +33,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       global: { window: {} },
+      "process.env.API_ENDPOINT": JSON.stringify(process.env.API_ENDPOINT || "/api/"),
     }),
     new VueLoaderPlugin(),
     new MiniCssExtractPlugin({
