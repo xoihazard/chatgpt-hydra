@@ -11,6 +11,8 @@
     "start": "webpack serve --mode=\"development\""
   },
   "devDependencies": {
+    "@headlessui/vue": "^1.7.13",
+    "@heroicons/vue": "^2.0.18",
     "@vue/compiler-sfc": "^3.2.47",
     "autoprefixer": "^10.4.14",
     "css-loader": "^6.7.3",
