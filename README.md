@@ -39,7 +39,7 @@ To run the webpack-dev-server, set the `API_ENDPOINT` environment variable to th
 Execute the following command in PowerShell, specifying the Wrangler host:
 
 ```
-$env:API_ENDPOINT="http://localhost:8788/api/" : yarn start
+$env:API_ENDPOINT="http://localhost:8788/api/" ; yarn start
 ```
 
 #### Bash

@@ -20,7 +20,9 @@
                   <div class="flex min-h-0 flex-1 flex-col overflow-y-scroll py-6">
                     <div class="px-4 sm:px-6">
                       <div class="flex items-start justify-between">
-                        <DialogTitle class="text-base font-semibold leading-6 uppercase">{{ title }}</DialogTitle>
+                        <DialogTitle class="text-base font-semibold leading-6 uppercase">
+                          {{ title }}
+                        </DialogTitle>
                         <div class="ml-3 flex h-7 items-center">
                           <button type="button" class="rounded-md text-base hover:text-gray-50 focus:outline-none" @click="open = false">
                             <span class="sr-only">Close panel</span>
@@ -30,7 +32,18 @@
                       </div>
                     </div>
                     <div class="relative mt-6 flex-1 px-4 sm:px-6">
-                      <pre class="whitespace-pre-wrap">{{ response }}</pre>
+                      <div class="bg-black bg-opacity-50 rounded-md p-5 overflow-x-auto">
+                        <pre class="whitespace-pre-wrap">{{ response }}</pre>
+                      </div>
+                      <div v-if="error" class="my-5 p-3 rounded-md bg-red-600 bg-opacity-50">
+                        <div>{{ error }}</div>
+                      </div>
+                      <div v-if="!isFetching" class="my-5">
+                        <button type="button" class="rounded bg-indigo-50 px-2 py-1 text-xs font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100" @click="emitRegenerateEvent">
+                          <ArrowPathIcon class="h-5 w-5 inline-block" aria-hidden="true" />
+                          Regenerate response
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div class="flex flex-shrink-0 justify-end px-4 py-4">
@@ -58,13 +71,15 @@ import { ref, watchEffect } from "vue";
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from "@headlessui/vue";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
 import { ChevronLeftIcon } from "@heroicons/vue/24/outline";
-import { PaperAirplaneIcon } from "@heroicons/vue/20/solid";
+import { PaperAirplaneIcon, ArrowPathIcon } from "@heroicons/vue/20/solid";
 
 const props = defineProps({
   modelValue: String,
   title: String,
   response: String,
+  error: String,
   messages: Object,
+  isFetching: Boolean,
 });
 
 const open = ref(true);
@@ -74,10 +89,14 @@ watchEffect(() => {
   prompt.value = props.modelValue;
 });
 
-const emits = defineEmits(["update:modelValue", "send"]);
+const emits = defineEmits(["update:modelValue", "send", "regenerate"]);
 
 function emitSendEvent() {
   emits("send");
+}
+
+function emitRegenerateEvent() {
+  emits("regenerate");
 }
 
 watchEffect(() => {
