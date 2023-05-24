@@ -29,7 +29,7 @@
       <div class="space-y-1 px-2 pb-3 pt-2">
         <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
         <DisclosureButton as="a" href="https://xoihazard.com" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-black hover:bg-opacity-50 hover:text-white">xoihazard.com</DisclosureButton>
-        <DisclosureButton as="a" href="https://github.com/xoihazard/chatgpt-hydra" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-black hover:bg-opacity-50 hover:text-white">xoihazard.com</DisclosureButton>
+        <DisclosureButton as="a" href="https://github.com/xoihazard/chatgpt-hydra" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-black hover:bg-opacity-50 hover:text-white">GitHub</DisclosureButton>
       </div>
     </DisclosurePanel>
   </Disclosure>
