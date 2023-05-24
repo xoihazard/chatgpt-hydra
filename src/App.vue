@@ -72,14 +72,20 @@ export default {
         this.error = String(error);
       }
     },
-    async processForm() {
+    processForm() {
       if (this.prompt.length > 0) {
         this.chat(this.prompt);
         this.prompt = "";
         this.error = null;
       }
     },
-    async regenerate() {
+    addUserMessage(prompt) {
+      this.messages.push({
+        role: "user",
+        content: `${prompt}\n\nNo more than 12 lines of hydra code.`,
+      });
+    },
+    regenerate() {
       // Delete last assistant role message
       while (this.messages.length > 0 && this.messages[this.messages.length - 1].role == "assistant") {
         this.messages.pop();
@@ -91,12 +97,7 @@ export default {
 
       if (prompt !== null) {
         this.title = prompt;
-
-        // Append user role to messages
-        this.messages.push({
-          role: "user",
-          content: prompt,
-        });
+        this.addUserMessage(prompt);
       }
 
       // Get last 4 messages
