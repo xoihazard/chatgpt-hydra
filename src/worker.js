@@ -39,8 +39,8 @@ export default {
     const parameters = {
       model: "gpt-3.5-turbo",
       messages: [
-        { role: "system", content: "You are a coder of the video synth language Hydra. Render visuals in Hydra code for every request. Any question has to be represented in Hydra code with relevant visuals. Available objects: { src, osc, gradient, shape, voronoi, noise, s0, s1, s2, s3, o0, o1, o2, o3, render }. Do not define variables." },
-        { role: "user", content: "simple one." },
+        { role: "system", content: "You are a coder of the video synth language Hydra. Render visuals in Hydra code for every request. Any question has to be represented in Hydra code with relevant visuals. No more than 15 lines of code. Available objects: { src, osc, gradient, shape, voronoi, noise, s0, s1, s2, s3, o0, o1, o2, o3, render }. Do not define variables and do not use URLs in src() functions. Do not explain the code or limit it to 100 characters. Keep text to a minimum." },
+        { role: "user", content: "Simple one." },
         { role: "assistant", content: "```\nosc(4, 0.1, 1.2).out()\n```\n" },
       ],
       stream: true,

@@ -1,13 +1,13 @@
 <template>
   <div>
     <canvas class="absolute inset-0 w-screen h-screen -z-50" />
-    <Chat v-model="prompt" :title="title" :response="response" :messages="messages" @send="processForm" />
+    <Chat v-model="prompt" :title="title" :response="response" :error="error" :messages="messages" :isFetching="isFetching" @send="processForm" @regenerate="regenerate" />
   </div>
 </template>
 
 <script>
 import Chat from "./components/Chat.vue";
-import Hydra from "hydra-synth";
+import HydraSynth from "hydra-synth";
 
 export default {
   setup() {},
@@ -19,6 +19,7 @@ export default {
       title: "",
       prompt: "",
       response: "",
+      error: null,
       messages: [],
       canvas: null,
       hydra: null,
@@ -29,11 +30,12 @@ export default {
   },
   mounted() {
     this.canvas = this.$el.querySelector("canvas");
-    this.hydra = new Hydra({ canvas: this.canvas, makeGlobal: false }).synth;
+    this.hydra = new HydraSynth({ canvas: this.canvas, makeGlobal: false });
+
     this.handleResize();
     window.addEventListener("resize", this.handleResize);
 
-    this.chat("Express a modern and beautiful pattern.");
+    this.chat("Express a modern and beautiful pattern which reflects mouse movement.");
   },
   beforeUnmount() {
     window.removeEventListener("resize", this.handleResize);
@@ -60,11 +62,13 @@ export default {
       this.hydra.setResolution(width, height);
     },
     updateHydra(code) {
-      const { src, osc, gradient, shape, voronoi, noise, solid, s0, s1, s2, s3, o0, o1, o2, o3, render, time } = this.hydra;
+      const { src, osc, gradient, shape, voronoi, noise, solid, s0, s1, s2, s3, o0, o1, o2, o3, render, time, a, mouse, mouseX, mouseY } = this.hydra.synth;
+      const jsString = `(() => {${code}})()`;
       try {
-        eval(code);
+        this.error = null;
+        eval(jsString);
       } catch (error) {
-        console.error(error);
+        this.error = String(error);
       }
     },
     async processForm() {
@@ -73,16 +77,25 @@ export default {
         this.prompt = "";
       }
     },
-    async chat(prompt) {
+    async regenerate() {
+      while (this.messages.length > 0 && this.messages[this.messages.length - 1].role == "assistant") {
+        this.messages.pop();
+      }
+      this.chat();
+    },
+    async chat(prompt = null) {
       if (this.isFetching) {
         this.isAborted = true;
       }
       this.isFetching = true;
-      this.title = prompt;
-      this.messages.push({
-        role: "user",
-        content: prompt,
-      });
+
+      if (prompt !== null) {
+        this.title = prompt;
+        this.messages.push({
+          role: "user",
+          content: prompt,
+        });
+      }
 
       const endpoint = process.env.API_ENDPOINT;
       const messages = this.messages.slice(Math.max(this.messages.length - 4, 0));
