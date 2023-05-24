@@ -1,6 +1,6 @@
-# ChatGPT Hydra Experiment
+# Hydra Code Generation by GPT-3
 
-Generate Hydra video synthesizer code using the OpenAI API based on user requests, and execute it in the browser.
+Generate Hydra video synthesizer code using the ChatGPT API based on user requests, and execute it in the browser.
 
 [Demo](https://vj.xoihazard.com)
 

@@ -1,29 +1,33 @@
 <template>
   <div>
     <canvas class="absolute inset-0 w-screen h-screen -z-50" />
-    <Chat v-model="prompt" :title="title" :response="response" :error="error" :messages="messages" :isFetching="isFetching" @send="processForm" @regenerate="regenerate" />
+    <Navbar />
+    <Chat v-model="prompt" :title="title" :response="responseText" :error="error" :messages="messages" :isPending="isPending" :isFetching="isFetching" @send="processForm" @regenerate="regenerate" />
   </div>
 </template>
 
 <script>
+import Navbar from "./components/Navbar.vue";
 import Chat from "./components/Chat.vue";
 import HydraSynth from "hydra-synth";
 
 export default {
   setup() {},
   components: {
+    Navbar,
     Chat,
   },
   data() {
     return {
       title: "",
       prompt: "",
-      response: "",
+      responseText: "",
       error: null,
       messages: [],
       canvas: null,
       hydra: null,
-      hydraCode: "",
+      code: "",
+      isPending: false,
       isFetching: false,
       isAborted: false,
     };
@@ -41,32 +45,29 @@ export default {
     window.removeEventListener("resize", this.handleResize);
   },
   watch: {
-    response() {
+    responseText() {
+      // Extract code from response text
       const regex = /```[^\n]*\n([\s\S]*?)```/gm;
       let matches;
 
-      while ((matches = regex.exec(this.response))) {
-        this.hydraCode = matches[1];
+      while ((matches = regex.exec(this.responseText))) {
+        this.code = matches[1];
         break;
       }
     },
-    hydraCode() {
-      this.updateHydra(this.hydraCode);
+    code() {
+      this.updateHydra(this.code);
     },
   },
   methods: {
-    handleResize() {
-      const aspect = this.canvas.scrollWidth / this.canvas.scrollHeight;
-      const width = 1024 * aspect;
-      const height = 1024;
-      this.hydra.setResolution(width, height);
-    },
     updateHydra(code) {
-      const { src, osc, gradient, shape, voronoi, noise, solid, s0, s1, s2, s3, o0, o1, o2, o3, render, time, a, mouse, mouseX, mouseY } = this.hydra.synth;
-      const jsString = `(() => {${code}})()`;
+      const { src, osc, gradient, shape, voronoi, noise, solid, s0, s1, s2, s3, o0, o1, o2, o3, render, time, a, mouse, width, height } = this.hydra.synth;
+      const mouseX = mouse.x,
+        mouseY = mouse.y;
+
       try {
         this.error = null;
-        eval(jsString);
+        eval(`(() => ${code})()`);
       } catch (error) {
         this.error = String(error);
       }
@@ -75,35 +76,42 @@ export default {
       if (this.prompt.length > 0) {
         this.chat(this.prompt);
         this.prompt = "";
+        this.error = null;
       }
     },
     async regenerate() {
+      // Delete last assistant role message
       while (this.messages.length > 0 && this.messages[this.messages.length - 1].role == "assistant") {
         this.messages.pop();
       }
       this.chat();
     },
     async chat(prompt = null) {
-      if (this.isFetching) {
-        this.isAborted = true;
-      }
-      this.isFetching = true;
+      this.isPending = true;
 
       if (prompt !== null) {
         this.title = prompt;
+
+        // Append user role to messages
         this.messages.push({
           role: "user",
           content: prompt,
         });
       }
 
-      const endpoint = process.env.API_ENDPOINT;
+      // Get last 4 messages
+
       const messages = this.messages.slice(Math.max(this.messages.length - 4, 0));
+
+      // Fetch response from API
+
+      if (this.isFetching) this.isAborted = true;
+      this.isFetching = true;
 
       const controller = new AbortController();
       const signal = controller.signal;
 
-      const response = await fetch(endpoint, {
+      const response = await fetch(API_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -112,9 +120,13 @@ export default {
         signal: signal,
       });
 
+      this.isPending = false;
+      this.responseText = "";
+
+      // Decode Server-Sent Events
+
       const reader = response.body.getReader();
       const decoder = new TextDecoder("utf-8");
-      this.response = "";
 
       try {
         while (true) {
@@ -125,29 +137,32 @@ export default {
           }
 
           const { done, value } = await reader.read();
-          if (done) {
-            break;
-          }
+
+          if (done) break;
 
           const chunks = decoder.decode(value).trim().split("\n\n");
 
           try {
             const dataArray = [];
+
             for (const chunk of chunks) {
               if (chunk.startsWith("data: {")) {
+                // Remove "data: " header and parse JSON
                 dataArray.push(JSON.parse(chunk.substring(6)));
               }
             }
+
+            // Extract text from ChatGPT choices
             for (const data of dataArray) {
               if ("choices" in data) {
                 if ("content" in data.choices[0].delta) {
-                  this.response += data.choices[0].delta.content;
+                  this.responseText += data.choices[0].delta.content;
                 }
               }
             }
           } catch (error) {
             if (error.name === "AbortError") {
-              console.log("Fetch aborted");
+              console.error("Fetch aborted.");
             } else {
               console.error(error);
             }
@@ -156,7 +171,7 @@ export default {
 
         this.messages.push({
           role: "assistant",
-          content: this.response,
+          content: this.responseText,
         });
       } catch (error) {
         console.error(error);
@@ -164,6 +179,12 @@ export default {
 
       this.isFetching = false;
       this.isAborted = false;
+    },
+    handleResize() {
+      const aspect = this.canvas.scrollWidth / this.canvas.scrollHeight;
+      const width = 1024 * aspect;
+      const height = 1024;
+      this.hydra.setResolution(width, height);
     },
   },
 };
