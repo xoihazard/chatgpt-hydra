@@ -82,7 +82,7 @@ export default {
     addUserMessage(prompt) {
       this.messages.push({
         role: "user",
-        content: `${prompt}\n\nNo more than 12 lines of hydra code.`,
+        content: `${prompt}\n\nNo more than 20 lines of hydra code.`,
       });
     },
     regenerate() {
