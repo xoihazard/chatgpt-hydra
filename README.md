@@ -4,9 +4,11 @@ Generate Hydra video synthesizer code using the ChatGPT API based on user reques
 
 ![Screenshot 1](./images/screenshot1.jpg)
 
-![Screenshot 2](./images/screenshot2.jpg)
+## Architecture
 
-![Screenshot 3](./images/screenshot3.jpg)
+The hosting is fully covered by Cloudflare Pages.
+
+![Architecture Diagram](./images/architecture.jpg)
 
 ## Demo
 
