@@ -2,6 +2,12 @@
 
 Generate Hydra video synthesizer code using the ChatGPT API based on user requests, and execute it in the browser.
 
+![Screenshot 1](./images/screenshot1.jpg)
+
+![Screenshot 2](./images/screenshot2.jpg)
+
+![Screenshot 3](./images/screenshot3.jpg)
+
 [Demo](https://vj.xoihazard.com)
 
 ## Local development
