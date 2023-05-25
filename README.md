@@ -14,12 +14,6 @@ The hosting is fully covered by Cloudflare Pages.
 
 Check out the live demo of the project at [vj.xoihazard.com](https://vj.xoihazard.com).
 
-## Project Environment
-
-This project is designed for the following environment:
-
-- Cloudflare Pages Function (Proxy for ChatGPT API)
-
 ## Local development
 
 ### Installing Node modules
