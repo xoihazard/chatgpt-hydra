@@ -1,7 +1,7 @@
 const { Configuration, OpenAIApi } = require("openai-edge");
 
 // We have decided to block access from the *.pages.dev domain as it is not possible to apply Cloudflare's WAF to this domain.
-const denyHostname = /^(?:[\.*]\.pages\.dev)$/;
+const denyHostname = /^(?:[^\.]+\.pages\.dev)$/;
 
 export default {
   async fetch(request, env) {
