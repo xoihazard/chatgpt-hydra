@@ -2,7 +2,21 @@
 
 Generate Hydra video synthesizer code using the ChatGPT API based on user requests, and execute it in the browser.
 
-[Demo](https://vj.xoihazard.com)
+![Screenshot 1](./images/screenshot1.jpg)
+
+![Screenshot 2](./images/screenshot2.jpg)
+
+![Screenshot 3](./images/screenshot3.jpg)
+
+## Demo
+
+Check out the live demo of the project at [vj.xoihazard.com](https://vj.xoihazard.com).
+
+## Project Environment
+
+This project is designed for the following environment:
+
+- Cloudflare Pages Function (Proxy for ChatGPT API)
 
 ## Local development
 
