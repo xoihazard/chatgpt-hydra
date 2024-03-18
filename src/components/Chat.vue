@@ -47,9 +47,9 @@
               <form @submit.prevent="emitSendEvent" class="mt-auto w-full">
                 <div class="relative mt-2 rounded-md shadow-sm">
                   <input type="text" v-model="prompt" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 md:text-base sm:text-sm sm:leading-6" placeholder="Send a request." />
-                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                  <button type="submit" class="cursor-pointer absolute inset-y-0 right-0 flex items-center pr-3">
                     <PaperAirplaneIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
-                  </div>
+                  </button>
                 </div>
               </form>
               <div class="mt-2 flex flex-col items-end gap-1 text-xs opacity-50">
