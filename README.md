@@ -34,11 +34,24 @@ yarn build
 
 ### Running Wrangler
 
-To run wrangler, execute the following command, replacing "YOUR_API_KEY" with your actual API key:
+To run Wrangler using environment variables defined in a .dev.vars file, follow these steps:
 
-```
-npx wrangler pages dev ./dist/ -b OPENAI_API_KEY=YOUR_API_KEY
-```
+1. Create a `.dev.vars` file in the root directory of your project.
+1. In the `.dev.vars` file, define the `OPENAI_API_KEY` environment variable as follows:
+
+   ```
+   OPENAI_API_KEY=YOUR_API_KEY
+   ```
+
+   Replace `YOUR_API_KEY` with your actual API key.
+1. Execute the following command to start Wrangler:
+
+   ```
+   npx wrangler pages dev ./dist/
+   ```
+
+   This command will load the environment variables defined in the `.dev.vars` file and run Wrangler locally.
+
 
 ### Launching Webpack Dev Server
 
