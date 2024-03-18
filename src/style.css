@@ -6,4 +6,8 @@
   body {
     @apply dark:bg-black dark:text-gray-300;
   }
+
+  canvas:last-child {
+    visibility: hidden;
+  }
 }

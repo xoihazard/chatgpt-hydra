@@ -141,15 +141,17 @@ export default {
 
           if (done) break;
 
-          const chunks = decoder.decode(value).trim().split("\n\n");
+          const chunks = decoder.decode(value).trim().split("\n");
 
           try {
             const dataArray = [];
 
             for (const chunk of chunks) {
-              if (chunk.startsWith("data: {")) {
-                // Remove "data: " header and parse JSON
-                dataArray.push(JSON.parse(chunk.substring(6)));
+              try {
+                const data = JSON.parse(chunk);
+                dataArray.push(data);
+              } catch {
+                continue;
               }
             }
 

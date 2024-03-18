@@ -1,4 +1,4 @@
-const { Configuration, OpenAIApi } = require("openai-edge");
+import OpenAI from "openai";
 
 // We have decided to block access from the *.pages.dev domain as it is not possible to apply Cloudflare's WAF to this domain.
 const denyHostname = /^(?:[^\.]+\.pages\.dev)$/;
@@ -38,10 +38,9 @@ export default {
   },
 
   async chatGPT(env, json) {
-    const configuration = new Configuration({
+    const openai = new OpenAI({
       apiKey: env.OPENAI_API_KEY,
     });
-    const openai = new OpenAIApi(configuration);
 
     const parameters = {
       model: "gpt-3.5-turbo",
@@ -63,8 +62,8 @@ export default {
     }
 
     try {
-      const completion = await openai.createChatCompletion(parameters);
-      return new Response(completion.body, {
+      const stream = await openai.chat.completions.create(parameters);
+      return new Response(stream.toReadableStream(), {
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "text/event-stream;charset=utf-8",
