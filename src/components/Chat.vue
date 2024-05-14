@@ -12,7 +12,7 @@
       <TransitionChild as="template" enter="transform transition ease-in-out duration-500 sm:duration-700" enter-from="translate-x-full" enter-to="translate-x-0" leave="transform transition ease-in-out duration-500 sm:duration-700" leave-from="translate-x-0" leave-to="translate-x-full">
         <div class="w-screen max-w-md">
           <div class="flex h-full flex-col bg-transparent">
-            <div class="flex min-h-0 flex-1 flex-col overflow-y-scroll py-6">
+            <div class="flex min-h-0 flex-1 flex-col overflow-y-auto py-6">
               <div class="px-4 sm:px-6">
                 <div class="flex items-start justify-between">
                   <div class="text-base font-semibold leading-6 uppercase">
@@ -29,38 +29,37 @@
               <div class="relative mt-6 flex-1 px-4 sm:px-6">
                 <div v-if="isPending" class="bg-black bg-opacity-50 text-green-400 rounded-md p-5 mb-5">Waiting for response...</div>
                 <div class="bg-black bg-opacity-50 rounded-md p-5 overflow-x-auto">
-                  <pre v-if="response.length > 0" class="whitespace-pre-wrap">{{ response }}</pre>
+                  <pre v-if="response.length > 0" class="break-all">{{ response }}</pre>
                   <div v-else-if="!isPending">There was no response. Please try another request or try again.</div>
                 </div>
-                <div v-if="error" class="my-5 p-3 rounded-md bg-red-600 bg-opacity-50">
-                  <div class="break-all">{{ error }}</div>
-                  <div v-if="!isFetching" class="mt-2 flex justify-end">
-                    <button type="button" class="rounded bg-red-50 px-2 py-1 text-xs font-semibold text-red-600 shadow-sm hover:bg-red-100" @click="emitTryToFixEvent">
-                      <BellIcon class="h-5 w-5 inline-block" aria-hidden="true" />
-                      Try to fix
+                <div v-if="!isFetching">
+                  <div v-if="error" class="my-5 p-3 rounded-md bg-red-600 bg-opacity-50">
+                    <div class="break-all">{{ error }}</div>
+                    <div class="mt-2 flex justify-end">
+                      <button type="button" class="rounded bg-red-50 px-2 py-1 text-xs font-semibold text-red-600 shadow-sm hover:bg-red-100" @click="emitTryToFixEvent">
+                        <BellIcon class="h-5 w-5 inline-block" aria-hidden="true" />
+                        Try to fix
+                      </button>
+                    </div>
+                  </div>
+                  <div class="my-5">
+                    <button type="button" class="rounded bg-indigo-50 px-2 py-1 text-xs font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100" @click="emitRegenerateEvent">
+                      <ArrowPathIcon class="h-5 w-5 inline-block" aria-hidden="true" />
+                      Regenerate response
                     </button>
                   </div>
                 </div>
-                <div v-if="!isFetching" class="my-5">
-                  <button type="button" class="rounded bg-indigo-50 px-2 py-1 text-xs font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100" @click="emitRegenerateEvent">
-                    <ArrowPathIcon class="h-5 w-5 inline-block" aria-hidden="true" />
-                    Regenerate response
-                  </button>
-                </div>
               </div>
             </div>
-            <div class="flex flex-shrink-0 flex-col justify-end px-4 py-4">
+            <div class="flex flex-shrink-0 flex-col justify-end px-6 py-6">
               <form @submit.prevent="emitSendEvent" class="mt-auto w-full">
                 <div class="relative mt-2 rounded-md shadow-sm">
-                  <input type="text" v-model="prompt" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 md:text-base sm:text-sm sm:leading-6" placeholder="Send a request." />
+                  <input type="text" v-model="prompt" class="block w-full rounded-md border-0 py-3 pl-4 pr-10 bg-opacity-80 bg-gray-800 text-white placeholder:text-gray-400 ring-0 focus:ring-2 focus:ring-inset focus:ring-indigo-600 md:text-lg sm:text-sm sm:leading-6" placeholder="Send a request." />
                   <button type="submit" class="cursor-pointer absolute inset-y-0 right-0 flex items-center pr-3">
-                    <PaperAirplaneIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
+                    <PaperAirplaneIcon :class="{ 'h-5 w-5': true, 'text-gray-400': !prompt, 'text-indigo-500': prompt }" aria-hidden="true" />
                   </button>
                 </div>
               </form>
-              <div class="mt-2 flex flex-col items-end gap-1 text-xs opacity-50">
-                <p>Powered by OpenAI</p>
-              </div>
             </div>
           </div>
         </div>

@@ -1,16 +1,16 @@
 <template>
   <Disclosure as="nav" v-slot="{ open }">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="flex h-16 items-center justify-between">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between">
         <div class="flex items-center">
           <div class="flex-shrink-0 hidden">
             <h1 class="leading-6">{{ title }}</h1>
           </div>
           <div class="hidden sm:ml-6 sm:block">
-            <div class="flex space-x-4">
+            <div class="flex space-x-4 uppercase">
               <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-              <a href="https://xoihazard.com" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-black hover:bg-opacity-50 hover:text-white">xoihazard.com</a>
-              <a href="https://github.com/xoihazard/chatgpt-hydra" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-black hover:bg-opacity-50 hover:text-white">GitHub</a>
+              <a href="https://xoihazard.com" class="rounded-md px-3 py-2 text-base font-medium text-white hover:bg-black hover:bg-opacity-50 hover:text-white">xoihazard.com</a>
+              <a href="https://github.com/xoihazard/chatgpt-hydra" class="rounded-md px-3 py-2 text-base font-medium text-white hover:bg-black hover:bg-opacity-50 hover:text-white">GitHub</a>
             </div>
           </div>
         </div>
@@ -26,7 +26,7 @@
     </div>
 
     <DisclosurePanel class="sm:hidden">
-      <div class="space-y-1 px-2 pb-3 pt-2">
+      <div class="space-y-1 px-2 pb-3 pt-2 uppercase">
         <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
         <DisclosureButton as="a" href="https://xoihazard.com" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-black hover:bg-opacity-50 hover:text-white">xoihazard.com</DisclosureButton>
         <DisclosureButton as="a" href="https://github.com/xoihazard/chatgpt-hydra" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-black hover:bg-opacity-50 hover:text-white">GitHub</DisclosureButton>
