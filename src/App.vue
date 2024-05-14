@@ -2,7 +2,7 @@
   <div>
     <canvas class="absolute inset-0 w-screen h-screen -z-50" />
     <Navbar />
-    <Chat v-model="prompt" :title="title" :response="responseText" :error="error" :messages="messages" :isPending="isPending" :isFetching="isFetching" @send="processForm" @regenerate="regenerate" />
+    <Chat v-model="prompt" :title="title" :response="responseText" :error="error" :messages="messages" :isPending="isPending" :isFetching="isFetching" @send="processForm" @regenerate="regenerate" @tryToFix="tryToFix" />
   </div>
 </template>
 
@@ -39,7 +39,7 @@ export default {
     this.handleResize();
     window.addEventListener("resize", this.handleResize);
 
-    this.chat("Express a modern and beautiful pattern which reflects mouse movement.");
+    this.chat("Spanish Castle Magic");
   },
   beforeUnmount() {
     window.removeEventListener("resize", this.handleResize);
@@ -67,7 +67,7 @@ export default {
 
       try {
         this.error = null;
-        eval(`(() => ${code})()`);
+        eval(`(() => {${code}})()`);
       } catch (error) {
         this.error = String(error);
       }
@@ -82,7 +82,7 @@ export default {
     addUserMessage(prompt) {
       this.messages.push({
         role: "user",
-        content: `${prompt}\n\nNo more than 20 lines of hydra code.`,
+        content: `${prompt}`,
       });
     },
     regenerate() {
@@ -92,17 +92,22 @@ export default {
       }
       this.chat();
     },
-    async chat(prompt = null) {
+    tryToFix() {
+      this.chat(this.error, false);
+    },
+    async chat(prompt = null, updateTitle = true) {
       this.isPending = true;
 
       if (prompt !== null) {
-        this.title = prompt;
         this.addUserMessage(prompt);
+        if (updateTitle) {
+          this.title = prompt;
+        }
       }
 
-      // Get last 4 messages
+      // Get last 2 messages
 
-      const messages = this.messages.slice(Math.max(this.messages.length - 4, 0));
+      const messages = this.messages.slice(Math.max(this.messages.length - 2, 0));
 
       // Fetch response from API
 

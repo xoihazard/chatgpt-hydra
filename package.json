@@ -1,6 +1,6 @@
 {
   "name": "chatgpt-hydra",
-  "title": "Hydra Code Generation by GPT-3",
+  "title": "Hydra Code Generation by GPT",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "git@github.com:xoihazard/chatgpt-hydra.git",
