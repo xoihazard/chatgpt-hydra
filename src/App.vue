@@ -39,7 +39,7 @@ export default {
     this.handleResize();
     window.addEventListener("resize", this.handleResize);
 
-    this.chat("Express a modern and beautiful pattern which reflects mouse movement.");
+    this.chat("Spanish Castle Magic");
   },
   beforeUnmount() {
     window.removeEventListener("resize", this.handleResize);
