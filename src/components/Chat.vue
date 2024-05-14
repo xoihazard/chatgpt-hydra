@@ -33,7 +33,13 @@
                   <div v-else-if="!isPending">There was no response. Please try another request or try again.</div>
                 </div>
                 <div v-if="error" class="my-5 p-3 rounded-md bg-red-600 bg-opacity-50">
-                  <div>{{ error }}</div>
+                  <div class="break-all">{{ error }}</div>
+                  <div v-if="!isFetching" class="mt-2 flex justify-end">
+                    <button type="button" class="rounded bg-red-50 px-2 py-1 text-xs font-semibold text-red-600 shadow-sm hover:bg-red-100" @click="emitTryToFixEvent">
+                      <BellIcon class="h-5 w-5 inline-block" aria-hidden="true" />
+                      Try to fix
+                    </button>
+                  </div>
                 </div>
                 <div v-if="!isFetching" class="my-5">
                   <button type="button" class="rounded bg-indigo-50 px-2 py-1 text-xs font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100" @click="emitRegenerateEvent">
@@ -68,7 +74,7 @@ import { ref, watchEffect } from "vue";
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from "@headlessui/vue";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
 import { ChevronLeftIcon } from "@heroicons/vue/24/outline";
-import { PaperAirplaneIcon, ArrowPathIcon } from "@heroicons/vue/20/solid";
+import { PaperAirplaneIcon, ArrowPathIcon, BellIcon } from "@heroicons/vue/20/solid";
 
 const props = defineProps({
   modelValue: String,
@@ -87,7 +93,7 @@ watchEffect(() => {
   prompt.value = props.modelValue;
 });
 
-const emits = defineEmits(["update:modelValue", "send", "regenerate"]);
+const emits = defineEmits(["update:modelValue", "send", "regenerate", "tryToFix"]);
 
 function emitSendEvent() {
   emits("send");
@@ -95,6 +101,10 @@ function emitSendEvent() {
 
 function emitRegenerateEvent() {
   emits("regenerate");
+}
+
+function emitTryToFixEvent() {
+  emits("tryToFix");
 }
 
 watchEffect(() => {

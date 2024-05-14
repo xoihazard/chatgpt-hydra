@@ -2,7 +2,7 @@
   <div>
     <canvas class="absolute inset-0 w-screen h-screen -z-50" />
     <Navbar />
-    <Chat v-model="prompt" :title="title" :response="responseText" :error="error" :messages="messages" :isPending="isPending" :isFetching="isFetching" @send="processForm" @regenerate="regenerate" />
+    <Chat v-model="prompt" :title="title" :response="responseText" :error="error" :messages="messages" :isPending="isPending" :isFetching="isFetching" @send="processForm" @regenerate="regenerate" @tryToFix="tryToFix" />
   </div>
 </template>
 
@@ -67,7 +67,7 @@ export default {
 
       try {
         this.error = null;
-        eval(`(() => ${code})()`);
+        eval(`(() => {${code}})()`);
       } catch (error) {
         this.error = String(error);
       }
@@ -92,12 +92,17 @@ export default {
       }
       this.chat();
     },
-    async chat(prompt = null) {
+    tryToFix() {
+      this.chat(this.error, false);
+    },
+    async chat(prompt = null, updateTitle = true) {
       this.isPending = true;
 
       if (prompt !== null) {
-        this.title = prompt;
         this.addUserMessage(prompt);
+        if (updateTitle) {
+          this.title = prompt;
+        }
       }
 
       // Get last 2 messages
