@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply dark:bg-black dark:text-gray-300;
+    @apply dark:bg-black dark:text-white;
   }
 
   canvas:last-child {
