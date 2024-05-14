@@ -82,7 +82,7 @@ export default {
     addUserMessage(prompt) {
       this.messages.push({
         role: "user",
-        content: `${prompt}\n\nNo more than 20 lines of hydra code.`,
+        content: `${prompt}`,
       });
     },
     regenerate() {
@@ -100,9 +100,9 @@ export default {
         this.addUserMessage(prompt);
       }
 
-      // Get last 4 messages
+      // Get last 2 messages
 
-      const messages = this.messages.slice(Math.max(this.messages.length - 4, 0));
+      const messages = this.messages.slice(Math.max(this.messages.length - 2, 0));
 
       // Fetch response from API
 
