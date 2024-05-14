@@ -95,7 +95,7 @@ export default {
     });
 
     const parameters = {
-      model: "gpt-4o",
+      model: env.OPENAI_MODEL || "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
