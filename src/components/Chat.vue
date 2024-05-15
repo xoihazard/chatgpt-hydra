@@ -8,7 +8,7 @@
     </div>
   </div>
   <TransitionRoot as="template" :show="open">
-    <div class="fixed inset-y-0 right-0 flex max-w-full pl-10">
+    <div class="fixed inset-y-0 right-0 flex max-w-full">
       <TransitionChild as="template" enter="transform transition ease-in-out duration-500 sm:duration-700" enter-from="translate-x-full" enter-to="translate-x-0" leave="transform transition ease-in-out duration-500 sm:duration-700" leave-from="translate-x-0" leave-to="translate-x-full">
         <div class="w-screen max-w-md">
           <div class="flex h-full flex-col bg-transparent">
@@ -28,9 +28,9 @@
               </div>
               <div class="relative mt-6 flex-1 px-4 sm:px-6">
                 <div v-if="isPending" class="bg-indigo-600 bg-opacity-50 text-white rounded-md p-5 mb-5">Waiting for response...</div>
-                <div class="bg-black bg-opacity-50 rounded-md p-5 overflow-x-auto">
+                <div class="bg-black bg-opacity-50 rounded-md p-5">
                   <div v-if="isRateLimit">Rate limit reached. Please wait for more than 10 seconds.</div>
-                  <pre v-else-if="response.length > 0" class="break-all">{{ response }}</pre>
+                  <pre v-else-if="response.length > 0" class="overflow-hidden">{{ response }}</pre>
                   <div v-else-if="!isPending">There was no response. Please try another request or try again.</div>
                 </div>
                 <div v-if="!isFetching">
@@ -52,7 +52,7 @@
                 </div>
               </div>
             </div>
-            <div class="flex flex-shrink-0 flex-col justify-end px-6 py-6">
+            <div class="flex flex-shrink-0 flex-col justify-end px-4 sm:px-6 py-6">
               <form @submit.prevent="emitSendEvent" class="mt-auto w-full">
                 <div class="relative mt-2 rounded-md shadow-sm">
                   <input type="text" v-model="prompt" class="block w-full rounded-md border-0 py-3 pl-4 pr-10 bg-opacity-80 bg-gray-800 text-white placeholder:text-gray-400 ring-0 focus:ring-2 focus:ring-inset focus:ring-indigo-600 md:text-lg sm:text-sm sm:leading-6" placeholder="Send a request." />
