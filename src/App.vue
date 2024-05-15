@@ -2,7 +2,7 @@
   <div>
     <canvas class="absolute inset-0 w-screen h-screen -z-50" />
     <Navbar />
-    <Chat v-model="prompt" :title="title" :response="responseText" :error="error" :messages="messages" :isPending="isPending" :isFetching="isFetching" @send="processForm" @regenerate="regenerate" @tryToFix="tryToFix" />
+    <Chat v-model="prompt" :title="title" :response="responseText" :error="error" :messages="messages" :isPending="isPending" :isFetching="isFetching" :isRateLimit="isRateLimit" @send="processForm" @regenerate="regenerate" @tryToFix="tryToFix" />
   </div>
 </template>
 
@@ -30,6 +30,7 @@ export default {
       isPending: false,
       isFetching: false,
       isAborted: false,
+      isRateLimit: false,
     };
   },
   mounted() {
@@ -97,6 +98,7 @@ export default {
     },
     async chat(prompt = null, updateTitle = true) {
       this.isPending = true;
+      this.isRateLimit = false;
 
       if (prompt !== null) {
         this.addUserMessage(prompt);
@@ -128,6 +130,14 @@ export default {
 
       this.isPending = false;
       this.responseText = "";
+
+      // Rate limit
+      if (response.status == 429) {
+        this.isRateLimit = true;
+        this.isFetching = false;
+        this.isAborted = false;
+        return;
+      }
 
       // Decode Server-Sent Events
 

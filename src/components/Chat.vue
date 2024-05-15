@@ -27,9 +27,10 @@
                 </div>
               </div>
               <div class="relative mt-6 flex-1 px-4 sm:px-6">
-                <div v-if="isPending" class="bg-black bg-opacity-50 text-green-400 rounded-md p-5 mb-5">Waiting for response...</div>
+                <div v-if="isPending" class="bg-indigo-600 bg-opacity-50 text-white rounded-md p-5 mb-5">Waiting for response...</div>
                 <div class="bg-black bg-opacity-50 rounded-md p-5 overflow-x-auto">
-                  <pre v-if="response.length > 0" class="break-all">{{ response }}</pre>
+                  <div v-if="isRateLimit">Rate limit reached. Please wait for more than 10 seconds.</div>
+                  <pre v-else-if="response.length > 0" class="break-all">{{ response }}</pre>
                   <div v-else-if="!isPending">There was no response. Please try another request or try again.</div>
                 </div>
                 <div v-if="!isFetching">
@@ -83,6 +84,7 @@ const props = defineProps({
   messages: Object,
   isPending: Boolean,
   isFetching: Boolean,
+  isRateLimit: Boolean,
 });
 
 const open = ref(true);
