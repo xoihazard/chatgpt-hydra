@@ -40,7 +40,7 @@ export default {
     this.handleResize();
     window.addEventListener("resize", this.handleResize);
 
-    this.chat("Spanish Castle Magic");
+    this.chat("Television");
   },
   beforeUnmount() {
     window.removeEventListener("resize", this.handleResize);
