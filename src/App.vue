@@ -62,6 +62,7 @@ export default {
   },
   methods: {
     updateHydra(code) {
+      this.hydra.hush();
       const { src, osc, gradient, shape, voronoi, noise, solid, s0, s1, s2, s3, o0, o1, o2, o3, render, time, a, mouse, width, height } = this.hydra.synth;
       const mouseX = mouse.x,
         mouseY = mouse.y;
