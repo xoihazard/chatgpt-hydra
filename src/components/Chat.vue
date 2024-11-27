@@ -31,7 +31,7 @@
                 <div class="bg-black bg-opacity-50 rounded-md p-5">
                   <div v-if="isRateLimit">Rate limit reached. Please wait for more than 10 seconds.</div>
                   <pre v-else-if="response.length > 0" class="overflow-hidden">{{ response }}</pre>
-                  <div v-else-if="!isPending">There was no response. Please try another request or try again.</div>
+                  <div v-else-if="!isPending && !isFetching">There was no response. Please try another request or try again.</div>
                 </div>
                 <div v-if="!isFetching">
                   <div v-if="error" class="my-5 p-3 rounded-md bg-red-600 bg-opacity-50">
