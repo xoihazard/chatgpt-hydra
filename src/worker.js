@@ -1,22 +1,18 @@
 import OpenAI from "openai";
 
-// Example code by Zach Krall
-// licensed with CC BY-NC-SA 4.0 https://creativecommons.org/licenses/by-nc-sa/4.0/
-// http://zachkrall.online/
-
 const system_prompt = `
 
 You are a coder of the video synth language Hydra.
 Render visuals in Hydra code for every request.
 
-- Any question has to be represented in Hydra code with relevant visuals.
-- More than 10 lines and less than 30 lines of code.
+- Any question must be represented using Hydra code with relevant visuals.
+- Keep the code between 10 to 30 lines.
 - Do not define variables.
-- Do not use URL in the \`src()\` function.
-- Do not explain the code or limit it to 100 characters.
+- Do not use URLs in the \`src()\` function.
+- Do not provide explanations for the code.
 - Enclose code blocks with \`\`\`.
-- If there is an error message, attempt to fix it.
-- **Do not use anything other than these objects**:
+- If an error message occurs, make an attempt to fix it.
+- **Only use the following objects**:
   - \`src\`
   - \`osc\`
   - \`gradient\`
@@ -36,24 +32,27 @@ Render visuals in Hydra code for every request.
 
 Example:
 \`\`\`
-osc(10, 0.9, 300)
-.color(0.9, 0.7, 0.8)
-.diff(
-  osc(45, 0.3, 100)
-  .color(0.9, 0.9, 0.9)
-  .rotate(0.18)
-  .pixelate(12)
-  .kaleid()
-)
-.scrollX(10)
-.colorama()
-.luma()
-.repeatX(4)
-.repeatY(4)
-.modulate(
-  osc(1, -0.9, 300)
-)
-.scale(2)
+osc(20, 0.1, 0.9)
+.color(0.9, 0.6, 0.2)
+.modulate(noise(4), 0.04)
+.diff(voronoi(3, 0.1, 0.6).invert().color(1, 0, 0))
+.scrollY(0.3, 0.05)
+.out(o0)
+
+osc(30, 0.05, 0.8)
+.color(0.3, 0.6, 0.9)
+.modulate(noise(2).invert(), 0.02)
+.scrollY(-0.2, 0.02)
+.out(o1)
+
+src(o0)
+.blend(src(o1), 0.5)
+.luma(0.5)
+.out(o2)
+
+src(o2)
+.kaleid(4)
+.colorama(0.3)
 .out()
 \`\`\`
 
@@ -92,10 +91,11 @@ export default {
   async chatGPT(env, json) {
     const openai = new OpenAI({
       apiKey: env.OPENAI_API_KEY,
+      baseURL: env.OPENAI_BASE_URL || "https://api.openai.com/v1",
     });
 
     const parameters = {
-      model: env.OPENAI_MODEL || "gpt-3.5-turbo",
+      model: env.OPENAI_MODEL || "gpt-4o-mini",
       messages: [
         {
           role: "system",
@@ -116,14 +116,27 @@ export default {
 
     try {
       const stream = await openai.chat.completions.create(parameters);
-      return new Response(stream.toReadableStream(), {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "text/event-stream;charset=utf-8",
-          "Cache-Control": "no-cache, no-transform",
-          "X-Accel-Buffering": "no",
-        },
-      });
+      const encoder = new TextEncoder();
+
+      return new Response(
+        new ReadableStream({
+          async start(controller) {
+            for await (const chunk of stream) {
+              const text = `data: ${JSON.stringify(chunk)}\n\n`;
+              controller.enqueue(encoder.encode(text));
+            }
+            controller.close();
+          },
+        }),
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "text/event-stream;charset=utf-8",
+            "Cache-Control": "no-cache, no-transform",
+            "X-Accel-Buffering": "no",
+          },
+        }
+      );
     } catch (error) {
       return await this.error(env, error);
     }
@@ -131,17 +144,7 @@ export default {
 
   async error(env, data) {
     return new Response(JSON.stringify(data), {
-      status: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-    });
-  },
-
-  async deny(env, data) {
-    return new Response(JSON.stringify(data), {
-      status: 403,
+      status: data.status || 400,
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
